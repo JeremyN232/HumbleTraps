@@ -10,7 +10,10 @@ public class CharacterMovement : MonoBehaviour,ICharacterMovement
     private bool isPlayer;
     public bool IsPlayer => isPlayer;
 
+    public bool IsDrowned { get; set; }
+
     public int Health { get;  set;}
+    public int Speed { get; set;}
 
 
     private void Awake()

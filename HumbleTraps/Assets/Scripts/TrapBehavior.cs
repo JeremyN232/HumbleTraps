@@ -5,7 +5,7 @@ using UnityEngine;
 public class TrapBehavior : MonoBehaviour
 {
 
-    [SerializeField] private TrapTargetType trapType;
+    [SerializeField] private TrapTargetType trapTargetType; private TrapType trapType;
     private Trap trap;
 
     private void Awake()
@@ -15,27 +15,60 @@ public class TrapBehavior : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var characterMover = other.GetComponent<ICharacterMovement>();
-        trap.HandleCharacterEntered(characterMover, trapType);
+        trap.HandleCharacterEntered(characterMover, trapTargetType, trapType);
 
     }
 }
 
 public class Trap
 {
-    public void HandleCharacterEntered(ICharacterMovement characterMover, TrapTargetType trapTargetType)
+    public void HandleCharacterEntered(ICharacterMovement characterMover, TrapTargetType trapTargetType, TrapType trapType)
     {
-        if(characterMover.IsPlayer)
+
+
+        if(trapType == TrapType.Slow)
         {
-            if(trapTargetType == TrapTargetType.Player)
-             characterMover.Health--;
+            if (characterMover.IsPlayer)
+            {
+                if (trapTargetType == TrapTargetType.Player)
+                    characterMover.Speed--;
+            }
+            else
+            {
+                if (trapTargetType == TrapTargetType.Npc)
+                    characterMover.Speed--;
+            }
         }
-        else
+        else if(trapType == TrapType.Damage)
         {
-            if(trapTargetType == TrapTargetType.Npc)
-             characterMover.Health--;
+            if (characterMover.IsPlayer)
+            {
+                if (trapTargetType == TrapTargetType.Player)
+                    characterMover.Health--;
+            }
+            else
+            {
+                if (trapTargetType == TrapTargetType.Npc)
+                    characterMover.Health--;
+            }
         }
-       
+        else if (trapType == TrapType.Water)
+        {
+            if (characterMover.IsPlayer)
+            {
+                if (trapTargetType == TrapTargetType.Player)
+                    characterMover.IsDrowned = true;
+            }
+            else
+            {
+                if (trapTargetType == TrapTargetType.Npc)
+                    characterMover.IsDrowned = true;
+            }
+        }
+
+
     }
 }
 
 public enum TrapTargetType {Player, Npc}
+public enum TrapType {Damage, Slow, Water}
